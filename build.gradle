@@ -1,0 +1,37 @@
+apply plugin: 'application'
+
+
+mainClassName = 'build.classes.main.ComputeEngine'
+sourceCompatibility = 1.5
+version = '1.0'
+
+
+manifest.mainAttributes(
+	"Implementation-Title": "Distributed Compute Engine",
+	"Implementation-Version": version,
+	"Main-Class": "src.main.java.ComputeEngine"
+)
+
+//jvmArgs = ["-Djava.security.policy=policy"]
+
+applicationDefaultJvmArgs = ["-Djava.security.policy=policy"]
+
+repositories{
+	mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.+'
+}
+
+
+// compiling with rmic
+
+task rmic() {
+	ant.rmic(
+		classname: 'ComputeEngine', 
+		base: 'build/classes/main',
+		destdir: 'build/classes/main'
+	)
+}
+

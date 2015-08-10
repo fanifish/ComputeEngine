@@ -2,16 +2,15 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-import lib.Compute;  // include all the interfaces
-import lib.Task;
 
-public class ComputeEngine implements Compute {
+public class ComputeEngine extends UnicastRemoteObject implements Compute {
 
-    public ComputeEngine() {
+    public ComputeEngine() throws RemoteException {
         super();
     }
 
     public <T> T executeTask(Task<T> t) {
+	System.out.println("Execute");
         return t.execute();
     }
 
@@ -19,13 +18,15 @@ public class ComputeEngine implements Compute {
         if (System.getSecurityManager() == null) {
             System.setSecurityManager(new SecurityManager());
         }
+	System.out.println("Staring computengine server");
         try {
             String name = "Compute";
             Compute engine = new ComputeEngine();
-            Compute stub =
-                (Compute) UnicastRemoteObject.exportObject(engine, 0);
+           // Compute stub = (Compute) UnicastRemoteObject.exportObject(engine, 0);
+	    System.out.println("Obtaining registry");
             Registry registry = LocateRegistry.getRegistry();
-            registry.rebind(name, stub);
+	    System.out.println("Binding stub in registry");
+            registry.rebind(name, engine);
             System.out.println("ComputeEngine bound");
         } catch (Exception e) {
             System.err.println("ComputeEngine exception:");
